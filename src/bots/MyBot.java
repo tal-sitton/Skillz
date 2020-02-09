@@ -65,6 +65,7 @@ public class MyBot implements SkillzBot {
                     }
                 }
             }
+            int z=0;
             // The amount of penguins the target has.
             if (destination != null && myPenguinAmountToSend != 0) {
                 if (myPenguinAmount > destination.penguinAmount + 1 && howManyToSend + 1 > myPenguinAmountToSend) {
