@@ -71,7 +71,7 @@ public class MyBot implements SkillzBot {
                 if (myPenguinAmount > destination.penguinAmount + 1 && howManyToSend + 1 > myPenguinAmountToSend) {
                     int destinationPenguinAmount = destination.penguinAmount;
                     System.out.println(myIceberg + " sends " + (destinationPenguinAmount + 1) + " penguins to " + destination);
-                    myIceberg.sendPenguins(destination, myPenguinAmountToSend);
+                 jjd   myIceberg.sendPenguins(destination, myPenguinAmountToSend);
                 }
             }
         }
