@@ -53,7 +53,7 @@ public class MyBot implements SkillzBot {
                         if (myIceberg.getTurnsTillArrival(des) == firstToStrike(game, des).turnsTillArrival + 1) {
                             destination = des;
                             if (enemyP != -1)
-                                myPenguinAmountToSend = enemyP - des.penguinAmount + 1;
+                                myPenguinAmountToSend = enemyP - des.penguinAmount + 2;
                         }
                     } else {
                         if (utils.getSentToSecond() && getEnemyIceDesWithNewYeledKaka(game, myIceberg) != null) {
