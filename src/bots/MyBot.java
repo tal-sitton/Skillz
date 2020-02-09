@@ -58,13 +58,14 @@ public class MyBot implements SkillzBot {
                     } else {
                         if (utils.getSentToSecond() && getEnemyIceDesWithNewYeledKaka(game, myIceberg) != null) {
                             System.out.println("hello there, general darth vader");
-                            destination=getEnemyIceDesWithNewYeledKaka(game,myIceberg);
-                            myPenguinAmountToSend=destination.penguinAmount + howManyEnemyPSent(game, destination) + destination.penguinsPerTurn
-                                    * myIceberg.getTurnsTillArrival(destination)+1;
+                            destination = getEnemyIceDesWithNewYeledKaka(game, myIceberg);
+                            myPenguinAmountToSend = destination.penguinAmount + howManyEnemyPSent(game, destination) + destination.penguinsPerTurn
+                                    * myIceberg.getTurnsTillArrival(destination) + 1;
                         }
                     }
                 }
             }
+            int z = 0;
             // The amount of penguins the target has.
             if (destination != null && myPenguinAmountToSend != 0) {
                 if (myPenguinAmount > destination.penguinAmount + 1 && howManyToSend + 1 > myPenguinAmountToSend) {
@@ -136,9 +137,12 @@ public class MyBot implements SkillzBot {
         for (Iceberg i1 : icebergs) {
             System.out.println("im just singing my song");
             int needToSend = i1.penguinAmount + howManyEnemyPSent(game, i1) + i1.penguinsPerTurn * iceberg.getTurnsTillArrival(i1);
-            if (iceberg.penguinAmount > needToSend && howManyToSend(game, iceberg)>=needToSend)
-                System.out.println("hello, i found one my master");
-            return i1;
+            if (iceberg.penguinAmount > needToSend && howManyToSend(game, iceberg) >= needToSend) {
+                if (howManyEnemyPSent(game, i1) + i1.penguinAmount + i1.penguinsPerTurn * iceberg.getTurnsTillArrival(i1) > howManyMyPSent(game, i1)) {
+                    System.out.println("hello, i found one my master");
+                    return i1;
+                }
+            }
         }
         return null;
     }
@@ -146,6 +150,15 @@ public class MyBot implements SkillzBot {
     public int howManyEnemyPSent(Game game, Iceberg des) {
         int penguinSent = 0;
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
+            if (penguinGroup.destination == des)
+                penguinSent += penguinGroup.penguinAmount;
+        }
+        return penguinSent;
+    }
+
+    public int howManyMyPSent(Game game, Iceberg des) {
+        int penguinSent = 0;
+        for (PenguinGroup penguinGroup : game.getMyPenguinGroups()) {
             if (penguinGroup.destination == des)
                 penguinSent += penguinGroup.penguinAmount;
         }
