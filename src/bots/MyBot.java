@@ -87,25 +87,21 @@ public class MyBot implements SkillzBot {
 
     public int howManyToSend(Game game, Iceberg iceberg) {
         int gainEveryTurn = iceberg.penguinsPerTurn;
-        int allICanHandleWith = iceberg.penguinAmount;
-
+        int canHandle = iceberg.penguinAmount;
+        int mTurns = 0;
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
 
             if (penguinGroup.destination == iceberg) {
-/*                for (PenguinGroup p2 : game.getEnemyPenguinGroups()) {
-                    if (p2 != penguinGroup) {
-                        if ( p2.destination == iceberg) {
+                if (mTurns < penguinGroup.turnsTillArrival)
+                    mTurns = penguinGroup.turnsTillArrival;
 
-                        }
-                    }
-                }*/
-                int canHandle = iceberg.penguinAmount + penguinGroup.turnsTillArrival * gainEveryTurn + 1;
-                if (canHandle - penguinGroup.penguinAmount > 0) {
+                /*if (canHandle - howManyEnemyPSent(game,iceberg) > 0){                   //penguinGroup.penguinAmount > 0) {
                     allICanHandleWith -= (canHandle - penguinGroup.penguinAmount);
                 }
+            */
             }
         }
-        return allICanHandleWith;
+        return iceberg.penguinAmount + gainEveryTurn * mTurns - howManyEnemyPSent(game, iceberg) + 1;
     }
 
     public Iceberg[] getNeutralIceDesWithYeledKaka(Game game, Iceberg iceberg) {
