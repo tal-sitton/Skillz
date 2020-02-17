@@ -23,15 +23,17 @@ public class MyBot implements SkillzBot {
             int enemyP = -1;
 
             if (game.turn < 10) {
-                destination = game.getNeutralIcebergs()[0];
+                destination = game.getNeutralIcebergs()[2];
+                System.out.println(destination.uniqueId);
                 myPenguinAmountToSend = destination.penguinAmount + 2;
             } else {
+                uniqueIdChecker(game);
                 System.out.println(utils.getSentToSecond());
                 System.out.println(game.getMyIcebergs().length == 2);
-                if (game.turn == 18 && !utils.getSentToSecond()) {
+                if (game.turn == 20 && !utils.getSentToSecond()&&myIceberg.uniqueId==59) {
                     for (Iceberg nextIceberg : game.getNeutralIcebergs()) {
                         System.out.println(nextIceberg.uniqueId);
-                        if (nextIceberg.uniqueId == 39) {
+                        if (nextIceberg.uniqueId == 37) {
                             System.out.println("found neo, the one");
                             destination = nextIceberg;
                             myPenguinAmountToSend = destination.penguinAmount + 1;
@@ -53,19 +55,18 @@ public class MyBot implements SkillzBot {
                         if (myIceberg.getTurnsTillArrival(des) == firstToStrike(game, des).turnsTillArrival + 1) {
                             destination = des;
                             if (enemyP != -1)
-                                myPenguinAmountToSend = enemyP - des.penguinAmount + 2;
+                                myPenguinAmountToSend = enemyP - des.penguinAmount + des.penguinsPerTurn+1;
                         }
                     } else {
                         if (utils.getSentToSecond() && getEnemyIceDesWithNewYeledKaka(game, myIceberg) != null) {
                             System.out.println("hello there, general darth vader");
-                            destination = getEnemyIceDesWithNewYeledKaka(game, myIceberg);
-                            myPenguinAmountToSend = destination.penguinAmount + howManyEnemyPSent(game, destination) + destination.penguinsPerTurn
-                                    * myIceberg.getTurnsTillArrival(destination) + 1;
+                            destination=getEnemyIceDesWithNewYeledKaka(game,myIceberg);
+                            myPenguinAmountToSend=destination.penguinAmount + howManyEnemyPSent(game, destination) + destination.penguinsPerTurn
+                                    * myIceberg.getTurnsTillArrival(destination)+1;
                         }
                     }
                 }
             }
-            int z = 0;
             // The amount of penguins the target has.
             if (destination != null && myPenguinAmountToSend != 0) {
                 if (myPenguinAmount > destination.penguinAmount + 1 && howManyToSend + 1 > myPenguinAmountToSend) {
@@ -79,7 +80,7 @@ public class MyBot implements SkillzBot {
     }
 
     public void uniqueIdChecker(Game game) {
-        for (Iceberg iceberg : game.getAllIcebergs()) {
+        for (Iceberg iceberg : game.getNeutralIcebergs()) {
             System.out.println(iceberg.uniqueId);
         }
 
@@ -87,21 +88,25 @@ public class MyBot implements SkillzBot {
 
     public int howManyToSend(Game game, Iceberg iceberg) {
         int gainEveryTurn = iceberg.penguinsPerTurn;
-        int canHandle = iceberg.penguinAmount;
-        int mTurns = 0;
+        int allICanHandleWith = iceberg.penguinAmount;
+
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
 
             if (penguinGroup.destination == iceberg) {
-                if (mTurns < penguinGroup.turnsTillArrival)
-                    mTurns = penguinGroup.turnsTillArrival;
+/*                for (PenguinGroup p2 : game.getEnemyPenguinGroups()) {
+                    if (p2 != penguinGroup) {
+                        if ( p2.destination == iceberg) {
 
-                /*if (canHandle - howManyEnemyPSent(game,iceberg) > 0){                   //penguinGroup.penguinAmount > 0) {
+                        }
+                    }
+                }*/
+                int canHandle = iceberg.penguinAmount + penguinGroup.turnsTillArrival * gainEveryTurn + 1;
+                if (canHandle - penguinGroup.penguinAmount > 0) {
                     allICanHandleWith -= (canHandle - penguinGroup.penguinAmount);
                 }
-            */
             }
         }
-        return iceberg.penguinAmount + gainEveryTurn * mTurns - howManyEnemyPSent(game, iceberg) + 1;
+        return allICanHandleWith;
     }
 
     public Iceberg[] getNeutralIceDesWithYeledKaka(Game game, Iceberg iceberg) {
@@ -133,12 +138,9 @@ public class MyBot implements SkillzBot {
         for (Iceberg i1 : icebergs) {
             System.out.println("im just singing my song");
             int needToSend = i1.penguinAmount + howManyEnemyPSent(game, i1) + i1.penguinsPerTurn * iceberg.getTurnsTillArrival(i1);
-            if (iceberg.penguinAmount > needToSend && howManyToSend(game, iceberg) >= needToSend) {
-                if (howManyEnemyPSent(game, i1) + i1.penguinAmount + i1.penguinsPerTurn * iceberg.getTurnsTillArrival(i1) > howManyMyPSent(game, i1)) {
-                    System.out.println("hello, i found one my master");
-                    return i1;
-                }
-            }
+            if (iceberg.penguinAmount > needToSend && howManyToSend(game, iceberg)>=needToSend)
+                System.out.println("hello, i found one my master");
+            return i1;
         }
         return null;
     }
@@ -146,15 +148,6 @@ public class MyBot implements SkillzBot {
     public int howManyEnemyPSent(Game game, Iceberg des) {
         int penguinSent = 0;
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
-            if (penguinGroup.destination == des)
-                penguinSent += penguinGroup.penguinAmount;
-        }
-        return penguinSent;
-    }
-
-    public int howManyMyPSent(Game game, Iceberg des) {
-        int penguinSent = 0;
-        for (PenguinGroup penguinGroup : game.getMyPenguinGroups()) {
             if (penguinGroup.destination == des)
                 penguinSent += penguinGroup.penguinAmount;
         }
