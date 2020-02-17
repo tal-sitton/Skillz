@@ -53,7 +53,7 @@ public class MyBot implements SkillzBot {
                         if (myIceberg.getTurnsTillArrival(des) == firstToStrike(game, des).turnsTillArrival + 1) {
                             destination = des;
                             if (enemyP != -1)
-                                myPenguinAmountToSend = enemyP - des.penguinAmount + 2;
+                                myPenguinAmountToSend = enemyP - des.penguinAmount + des.penguinsPerTurn+1;
                         }
                     } else {
                         if (utils.getSentToSecond() && getEnemyIceDesWithNewYeledKaka(game, myIceberg) != null) {
@@ -64,34 +64,6 @@ public class MyBot implements SkillzBot {
 
                         }
                     }
-                    /*else {*/
-                    System.out.println("defence 1 " + howManyEnemyPSent(game, myIceberg) + " iceberg: " + myIceberg);
-                    int amountToSend = 0;
-                    if ((howManyEnemyPSent(game, myIceberg) > 0)) { /* defence! */
-                        System.out.println("defence 2");
-                        PenguinGroup locatedGroup = null;
-                        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
-
-                            if (penguinGroup.destination == myIceberg) {
-                                amountToSend = penguinGroup.penguinAmount - (myIceberg.penguinAmount + penguinGroup.turnsTillArrival * myIceberg.penguinsPerTurn + 1);
-                                System.out.println(amountToSend);
-                                locatedGroup = penguinGroup;
-                                break;
-                            }
-                        }
-                        for (Iceberg myI1 : game.getMyIcebergs()) {
-                            if (locatedGroup != null) {
-                                if (myI1.getTurnsTillArrival(myIceberg) <= locatedGroup.turnsTillArrival && myI1 != myIceberg) {
-                                    System.out.println("defence 4 -- end ( " + myI1 + " ):");
-                                    int myI1Amount = myI1.penguinAmount;
-                                    myI1.sendPenguins(myIceberg, amountToSend);
-                                    if (myI1Amount == myI1.penguinAmount + 2)
-                                        break;
-                                }
-                            }
-                        }
-                    }
-
                 }
             }
             int z = 0;
@@ -108,7 +80,7 @@ public class MyBot implements SkillzBot {
     }
 
     public void uniqueIdChecker(Game game) {
-        for (Iceberg iceberg : game.getAllIcebergs()) {
+        for (Iceberg iceberg : game.getNeutralIcebergs()) {
             System.out.println(iceberg.uniqueId);
         }
 
@@ -124,6 +96,10 @@ public class MyBot implements SkillzBot {
                 if (mTurns < penguinGroup.turnsTillArrival)
                     mTurns = penguinGroup.turnsTillArrival;
 
+                /*if (canHandle - howManyEnemyPSent(game,iceberg) > 0){                   //penguinGroup.penguinAmount > 0) {
+                    allICanHandleWith -= (canHandle - penguinGroup.penguinAmount);
+                }
+            */
             }
         }
         return iceberg.penguinAmount + gainEveryTurn * mTurns - howManyEnemyPSent(game, iceberg) + 1;
@@ -200,6 +176,4 @@ public class MyBot implements SkillzBot {
             }
         return first;
     }
-
-
 }
