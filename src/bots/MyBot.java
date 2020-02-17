@@ -1,6 +1,9 @@
 package bots;
 
-import penguin_game.*;
+import penguin_game.Game;
+import penguin_game.Iceberg;
+import penguin_game.PenguinGroup;
+import penguin_game.SkillzBot;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -23,15 +26,17 @@ public class MyBot implements SkillzBot {
             int enemyP = -1;
 
             if (game.turn < 10) {
-                destination = game.getNeutralIcebergs()[0];
+                destination = game.getNeutralIcebergs()[2];
+                System.out.println(destination.uniqueId);
                 myPenguinAmountToSend = destination.penguinAmount + 2;
             } else {
+                uniqueIdChecker(game);
                 System.out.println(utils.getSentToSecond());
                 System.out.println(game.getMyIcebergs().length == 2);
-                if (game.turn == 18 && !utils.getSentToSecond()) {
+                if (game.turn == 20 && !utils.getSentToSecond() && myIceberg.uniqueId == 59) {
                     for (Iceberg nextIceberg : game.getNeutralIcebergs()) {
                         System.out.println(nextIceberg.uniqueId);
-                        if (nextIceberg.uniqueId == 39) {
+                        if (nextIceberg.uniqueId == 37) {
                             System.out.println("found neo, the one");
                             destination = nextIceberg;
                             myPenguinAmountToSend = destination.penguinAmount + 1;
@@ -53,7 +58,7 @@ public class MyBot implements SkillzBot {
                         if (myIceberg.getTurnsTillArrival(des) == firstToStrike(game, des).turnsTillArrival + 1) {
                             destination = des;
                             if (enemyP != -1)
-                                myPenguinAmountToSend = enemyP - des.penguinAmount + des.penguinsPerTurn+1;
+                                myPenguinAmountToSend = enemyP - des.penguinAmount + des.penguinsPerTurn + 1;
                         }
                     } else {
                         if (utils.getSentToSecond() && getEnemyIceDesWithNewYeledKaka(game, myIceberg) != null) {
