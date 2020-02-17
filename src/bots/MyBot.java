@@ -23,15 +23,17 @@ public class MyBot implements SkillzBot {
             int enemyP = -1;
 
             if (game.turn < 10) {
-                destination = game.getNeutralIcebergs()[0];
+                destination = game.getNeutralIcebergs()[2];
+                System.out.println(destination.id);
                 myPenguinAmountToSend = destination.penguinAmount + 2;
             } else {
+                uniqueIdChecker(game);
                 System.out.println(utils.getSentToSecond());
                 System.out.println(game.getMyIcebergs().length == 2);
-                if (game.turn == 18 && !utils.getSentToSecond()) {
+                if (game.turn == 19 && !utils.getSentToSecond()) {
                     for (Iceberg nextIceberg : game.getNeutralIcebergs()) {
                         System.out.println(nextIceberg.uniqueId);
-                        if (nextIceberg.uniqueId == 39) {
+                        if (nextIceberg.uniqueId == 37) {
                             System.out.println("found neo, the one");
                             destination = nextIceberg;
                             myPenguinAmountToSend = destination.penguinAmount + 1;
@@ -78,7 +80,7 @@ public class MyBot implements SkillzBot {
     }
 
     public void uniqueIdChecker(Game game) {
-        for (Iceberg iceberg : game.getAllIcebergs()) {
+        for (Iceberg iceberg : game.getNeutralIcebergs()) {
             System.out.println(iceberg.uniqueId);
         }
 
