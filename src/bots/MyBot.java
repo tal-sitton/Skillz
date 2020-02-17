@@ -73,13 +73,13 @@ public class MyBot implements SkillzBot {
                     /*else {*/
                     System.out.println("defence 1 " + howManyEnemyPSent(game, myIceberg) + " iceberg: " + myIceberg);
                     int amountToSend = 0;
-                    if ((howManyEnemyPSent(game, myIceberg) > 0)) { /* defence! */
+                    if ((howManyEnemyPSent(game, myIceberg) > 0)) { // defence!
                         System.out.println("defence 2");
                         PenguinGroup locatedGroup = null;
                         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
 
-                            if (penguinGroup.destination == myIceberg) {
-                                amountToSend = penguinGroup.penguinAmount - (myIceberg.penguinAmount + penguinGroup.turnsTillArrival * myIceberg.penguinsPerTurn + 1);
+                            if (penguinGroup.destination == myIceberg && howManyMyPSent(game, myIceberg) + myIceberg.penguinAmount + penguinGroup.turnsTillArrival * myIceberg.penguinsPerTurn < howManyEnemyPSent(game, myIceberg)) {
+                                amountToSend = /*penguinGroup.penguinAmount*/howManyEnemyPSent(game,myIceberg) - (myIceberg.penguinAmount + penguinGroup.turnsTillArrival * myIceberg.penguinsPerTurn) + 1;
                                 System.out.println(amountToSend);
                                 locatedGroup = penguinGroup;
                                 break;
