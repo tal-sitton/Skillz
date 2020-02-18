@@ -8,7 +8,9 @@ import java.util.Comparator;
 public class MyBot implements SkillzBot {
 
     public static Utils utils = new Utils();
-
+    Iceberg[] pGDes=new Iceberg[8];
+    int[] pGAmount=new int[8];
+    int counterArr=0;
     public void doTurn(Game game) {
         // Enter your code here:
         for (Iceberg myIceberg : game.getMyIcebergs()) {
@@ -41,12 +43,12 @@ public class MyBot implements SkillzBot {
                         }
                     }
                 } else {
-                    if (utils.getSentToSecond() && game.getNeutralIcebergs().length > 0 && getNeutralIceDesWithYeledKaka(game, myIceberg) != null) {
+                    if (utils.getSentToSecond() && game.getNeutralIcebergs().length > 0 && getNeutralIceDesWithYeledKaka(game, myIceberg) != null && isItWorthItN(game,myIceberg)) {
                         System.out.println("hello there, general kenoli");
                         for (Iceberg destinations : getNeutralIceDesWithYeledKaka(game, myIceberg)) {
                             des = destinations;
                             enemyP = howManyEnemyPSent(game, des);
-                            if (myPenguinAmount > enemyP - des.penguinAmount + 1) { //checks if we have enough penguins to take over the island
+                            if (myPenguinAmount > enemyP - des.penguinAmount + 1 ) { //checks if we have enough penguins to take over the island
                                 break;
                             }
                         }
@@ -72,6 +74,10 @@ public class MyBot implements SkillzBot {
                     int destinationPenguinAmount = destination.penguinAmount;
                     System.out.println(myIceberg + " sends " + (destinationPenguinAmount + 1) + " penguins to " + destination);
                     myIceberg.sendPenguins(destination, myPenguinAmountToSend);
+                    pGDes[counterArr]=destination;
+                    pGAmount[counterArr]=myPenguinAmountToSend;
+                    counterArr++;
+
                 }
             }
         }
@@ -164,7 +170,7 @@ public class MyBot implements SkillzBot {
     public PenguinGroup firstToStrike(Game game, Iceberg iceberg) {
         PenguinGroup first = game.getEnemyPenguinGroups()[0];
         int i = 0;
-        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups())
+        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()){
             if (penguinGroup.destination == iceberg) {
                 if (i == 0) {
                     first = penguinGroup;
@@ -173,6 +179,35 @@ public class MyBot implements SkillzBot {
                 if (penguinGroup.turnsTillArrival < first.turnsTillArrival)
                     first = penguinGroup;
             }
+        }
         return first;
+    }
+    public boolean isItWorthItN(Game game,Iceberg iceberg){
+        for (PenguinGroup penguinGroup : game.getMyPenguinGroups()){
+            if (penguinGroup.destination==iceberg){
+                if (penguinGroup.penguinAmount>penguinGroup.turnsTillArrival-getEnemyPenguinGroup(game,iceberg).turnsTillArrival+getEnemyPenguinGroup(game,iceberg).penguinAmount-iceberg.penguinAmount){
+                    return false;
+                }
+            }
+        }
+        int sumPA=0;
+        for (int i = 0; i < 8; i++) {
+            if (pGDes[i]==iceberg){
+                sumPA+=pGAmount[i];
+
+            }
+        }
+        if (sumPA>getEnemyPenguinGroup(game,iceberg).turnsTillArrival+getEnemyPenguinGroup(game,iceberg).penguinAmount-iceberg.penguinAmount)
+            return false;
+        return true;
+    }
+    public PenguinGroup getEnemyPenguinGroup (Game game,Iceberg iceberg){
+        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()){
+            if (penguinGroup.destination==iceberg){
+                return penguinGroup;
+            }
+        }
+        return null;
+
     }
 }
