@@ -52,15 +52,15 @@ public class MyBot implements SkillzBot {
                             des = destinations;
                             enemyP = howManyEnemyPSent(game, des);
                             if (myPenguinAmount > enemyP - des.penguinAmount + 1) { //checks if we have enough penguins to take over the island
-                                System.out.println("i can do it, my masterv "+myIceberg.id);
+                                System.out.println("i can do it, my masterv " + myIceberg.id);
                                 break;
                             }
                         }
                         if (myIceberg.getTurnsTillArrival(des) == firstToStrike(game, des).turnsTillArrival + 1) {
                             destination = des;
-                            if (enemyP != -1){
+                            if (enemyP != -1) {
                                 myPenguinAmountToSend = enemyP - des.penguinAmount + des.penguinsPerTurn + 1;
-                                System.out.println("i know i can! im going in "+myIceberg.id);
+                                System.out.println("i know i can! im going in " + myIceberg.id);
                             }
                         }
                     } else {
@@ -150,6 +150,24 @@ public class MyBot implements SkillzBot {
         return null;
     }
 
+    public PenguinGroup[] howManyEnemyPGSent(Game game, Iceberg des) {
+        int arrLength = 0;
+        for (PenguinGroup CountPenguinGroup : game.getEnemyPenguinGroups()) {
+            if (CountPenguinGroup.destination == des)
+                arrLength++;
+        }
+
+        PenguinGroup[] penguinGroupSent = new PenguinGroup[arrLength];
+        int i = 0;
+        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
+            if (penguinGroup.destination == des) {
+                penguinGroupSent[i] = penguinGroup;
+                i++;
+            }
+        }
+        return penguinGroupSent;
+    }
+
     public int howManyEnemyPSent(Game game, Iceberg des) {
         int penguinSent = 0;
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()) {
@@ -169,19 +187,17 @@ public class MyBot implements SkillzBot {
     }
 
     public PenguinGroup firstToStrike(Game game, Iceberg iceberg) {
-        PenguinGroup first = game.getEnemyPenguinGroups()[0];
+        PenguinGroup[] arr = howManyEnemyPGSent(game, iceberg);
+        Arrays.sort(arr, Comparator.comparingInt(o -> o.turnsTillArrival));
+        int needAmount = iceberg.penguinAmount;
         int i = 0;
-        for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()){
-            if (penguinGroup.destination == iceberg) {
-                if (i == 0) {
-                    first = penguinGroup;
-                    i++;
-                }
-                if (penguinGroup.turnsTillArrival < first.turnsTillArrival)
-                    first = penguinGroup;
+        for (PenguinGroup penguinGroup : arr) {
+            needAmount-=penguinGroup.penguinAmount;
+            if(needAmount<0){
+                return penguinGroup;
             }
         }
-        return first;
+        return arr[0];
     }
 
     public void defense(Game game, Iceberg myIceberg) { //tries to defend our icebergs from the enemy's attacks
@@ -201,9 +217,9 @@ public class MyBot implements SkillzBot {
             }
             for (Iceberg myI1 : game.getMyIcebergs()) { //where salvation will come from?
                 if (locatedGroup != null) { //if there is a
-                    if (myI1.getTurnsTillArrival(myIceberg) <= locatedGroup.turnsTillArrival && myI1 != myIceberg) {    //can iceberg myI1 reach in time?
+                    if (myI1.getTurnsTillArrival(myIceberg) <= locatedGroup.turnsTillArrival && myI1 != myIceberg && myI1.penguinAmount-amountToSend > 0) {    //can iceberg myI1 reach in time?
                         System.out.println("defense 4 -- end ( " + myI1 + " ):");
-                        int iii=myI1.penguinAmount;
+                        int iii = myI1.penguinAmount;
                         myI1.sendPenguins(myIceberg, amountToSend); //defence successful!
                         //if (myI1.penguinAmount + 2 == iii)
                         break;
