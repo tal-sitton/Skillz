@@ -219,9 +219,7 @@ public class MyBot implements SkillzBot {
                 if (locatedGroup != null) { //if there is a
                     if (myI1.getTurnsTillArrival(myIceberg) <= locatedGroup.turnsTillArrival && myI1 != myIceberg && myI1.penguinAmount-amountToSend > 0) {    //can iceberg myI1 reach in time?
                         System.out.println("defense 4 -- end ( " + myI1 + " ):");
-                        int iii = myI1.penguinAmount;
                         myI1.sendPenguins(myIceberg, amountToSend); //defence successful!
-                        //if (myI1.penguinAmount + 2 == iii)
                         break;
                     }
                 }
