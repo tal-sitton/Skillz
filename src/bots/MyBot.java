@@ -8,8 +8,8 @@ import java.util.Comparator;
 public class MyBot implements SkillzBot {
 
     public static Utils utils = new Utils();
-    Iceberg[] pGDes=new Iceberg[8];
-    int[] pGAmount=new int[8];
+    Iceberg[] pGDes=new Iceberg[12];
+    int[] pGAmount=new int[12];
     int counterArr=0;
     public void doTurn(Game game) {
         // Enter your code here:
@@ -76,9 +76,8 @@ public class MyBot implements SkillzBot {
                     int destinationPenguinAmount = destination.penguinAmount;
                     System.out.println(myIceberg + " sends " + (destinationPenguinAmount + 1) + " penguins to " + destination);
                     myIceberg.sendPenguins(destination, myPenguinAmountToSend);
-                    pGDes[counterArr]=destination;
-                    pGAmount[counterArr]=myPenguinAmountToSend;
-                    counterArr++;
+
+
 
                 }
             }
@@ -185,31 +184,24 @@ public class MyBot implements SkillzBot {
         return first;
     }
     public boolean isItWorthItN(Game game,Iceberg iceberg){
+        System.out.println("isItWorthItN");
         for (PenguinGroup penguinGroup : game.getMyPenguinGroups()){
             if (penguinGroup.destination==iceberg){
-                if (penguinGroup.penguinAmount>penguinGroup.turnsTillArrival-getEnemyPenguinGroup(game,iceberg).turnsTillArrival+getEnemyPenguinGroup(game,iceberg).penguinAmount-iceberg.penguinAmount){
+                if (penguinGroup.penguinAmount>iceberg.penguinsPerTurn+1+getEnemyPenguinGroupAmount(game,iceberg)-iceberg.penguinAmount){
                     return false;
                 }
             }
         }
-        int sumPA=0;
-        for (int i = 0; i < 8; i++) {
-            if (pGDes[i]==iceberg){
-                sumPA+=pGAmount[i];
 
-            }
-        }
-        if (sumPA>getEnemyPenguinGroup(game,iceberg).turnsTillArrival+getEnemyPenguinGroup(game,iceberg).penguinAmount-iceberg.penguinAmount)
-            return false;
         return true;
     }
-    public PenguinGroup getEnemyPenguinGroup (Game game,Iceberg iceberg){
+    public int getEnemyPenguinGroupAmount (Game game,Iceberg iceberg){
         for (PenguinGroup penguinGroup : game.getEnemyPenguinGroups()){
             if (penguinGroup.destination==iceberg){
-                return penguinGroup;
+                return penguinGroup.penguinAmount;
             }
         }
-        return null;
+        return 0;
 
     }
 }
